@@ -1,8 +1,7 @@
 services:
   web:
-    image: registry.digitalocean.com/my-registry123/mynodejsapp:1.0.0
+    image: registry.digitalocean.com/my-registry123/mynodejsapp:131485e0803c16d8f518629844ec7d85baac2ee5
     command: ["sh", "-c", "npm start"]
+    restart: unless-stopped
     ports:
       - "3000:3000"
-    volumes:
-      - ./:/app
