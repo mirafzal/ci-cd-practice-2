@@ -1,4 +1,4 @@
-name: [My node js app] Build and deploy
+name: "[My node js app] Build and deploy"
 
 on:
   push:
