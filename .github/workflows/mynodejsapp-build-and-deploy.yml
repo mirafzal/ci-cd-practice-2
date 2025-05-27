@@ -41,7 +41,7 @@ jobs:
 
       - name: Copy files via SCP
         run: |
-          scp -P ${{ secrets.SSH_REMOTE_PORT || '22' }} -r ./deploy/docker-compose.yaml ${{ secrets.SSH_REMOTE_USER }}@${{ secrets.SSH_REMOTE_HOST }}:/opt/mynodejsapp/
+          scp -P ${{ secrets.SSH_REMOTE_PORT || '22' }} -r ./mynodejsapp/deploy/docker-compose.yaml ${{ secrets.SSH_REMOTE_USER }}@${{ secrets.SSH_REMOTE_HOST }}:/opt/mynodejsapp/
 
       - name: Restart remote app
         run: |
