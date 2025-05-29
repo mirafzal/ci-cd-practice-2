@@ -1,12 +1,12 @@
-name: "[My node js app] Build and deploy"
+name: "[My laravel js app] Build and deploy"
 
 on:
   push:
     branches:
       - "main"
     paths:
-      - 'mynodejsapp/**'
-      - '.github/workflows/mynodejsapp-build-and-deploy.yml'
+      - 'mylaravelapp/**'
+      - '.github/workflows/mylaravelapp-build-and-deploy.yml'
   workflow_dispatch:
 
 jobs:
@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Build app
     outputs:
-      image_name: registry.digitalocean.com/my-registry123/mynodejsapp:${{ github.sha }}
+      image_name: registry.digitalocean.com/my-registry123/mylaravelapp:${{ github.sha }}
     steps:
       - uses: actions/checkout@v4
 
@@ -23,10 +23,10 @@ jobs:
 
       - name: Build and push docker image
         run: |
-          cd mynodejsapp
-          docker build -t registry.digitalocean.com/my-registry123/mynodejsapp:${{ github.sha }} -f Dockerfile.production .
+          cd mylaravelapp
+          docker build -t registry.digitalocean.com/my-registry123/mylaravelapp:${{ github.sha }} -f Dockerfile .
           docker login registry.digitalocean.com -u dockeruser -p ${{ secrets.REGISTRY_TOKEN }}
-          docker push registry.digitalocean.com/my-registry123/mynodejsapp:${{ github.sha }}
+          docker push registry.digitalocean.com/my-registry123/mylaravelapp:${{ github.sha }}
 
   deploy:
     runs-on: ubuntu-latest
@@ -44,12 +44,12 @@ jobs:
 
       - name: Copy files via SCP
         run: |
-          scp -P ${{ secrets.SSH_REMOTE_PORT || '22' }} -r ./mynodejsapp/deploy/docker-compose.yaml ${{ secrets.SSH_REMOTE_USER }}@${{ secrets.SSH_REMOTE_HOST }}:/opt/mynodejsapp/
+          scp -P ${{ secrets.SSH_REMOTE_PORT || '22' }} -r ./mylaravelapp/deploy/* ${{ secrets.SSH_REMOTE_USER }}@${{ secrets.SSH_REMOTE_HOST }}:/opt/mylaravelapp/
 
       - name: Restart remote app
         run: |
           ssh -p ${{ secrets.SSH_REMOTE_PORT || '22' }} ${{ secrets.SSH_REMOTE_USER }}@${{ secrets.SSH_REMOTE_HOST }} << 'EOF'
-            cd /opt/mynodejsapp/
+            cd /opt/mylaravelapp/
             yq -i '.services.web.image = "${{ needs.build.outputs.image_name }}"' docker-compose.yaml
             docker compose up -d --remove-orphans
           EOF
