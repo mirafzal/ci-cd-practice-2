@@ -31,7 +31,7 @@ services:
   worker:
     image: registry.digitalocean.com/my-registry123/mylaravelapp:1.0.0
     command: >
-      sh -c "php artisan migrate --force && php artisan optimize && php-fpm"
+      sh -c "php artisan queue:work"
     env_file:
       - .env
     volumes:
