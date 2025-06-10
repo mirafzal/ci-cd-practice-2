@@ -17,17 +17,8 @@ services:
     image: registry.digitalocean.com/my-registry123/mylaravelapp:1.0.0
     command: >
       sh -c "php artisan migrate --force && php artisan optimize && php-fpm"
-    environment:
-      APP_ENV: production
-      APP_KEY: base64:G98v4daBLwkw66ihcpB4PtHwOdw1sDeTNG35Jj96cK400Unc75B4pr4LJZ9E
-      APP_DEBUG: 'false'
-      APP_URL: https://laravel.mirafzal.uz
-      DB_CONNECTION: pgsql
-      DB_HOST: db
-      DB_PORT: 5432
-      DB_DATABASE: laravel
-      DB_USERNAME: laravel
-      DB_PASSWORD: secret
+    env_file:
+      - .env
     volumes:
       - laravel-public:/var/www/html/public:ro
       - laravel-storage:/var/www/html/storage
