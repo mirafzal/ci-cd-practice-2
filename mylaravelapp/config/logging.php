@@ -18,7 +18,7 @@ return [
     |
     */
 
-    'default' => env('LOG_CHANNEL', 'stack'),
+    'default' => env('LOG_CHANNEL', 'stdout'),
 
     /*
     |--------------------------------------------------------------------------
@@ -125,6 +125,12 @@ return [
 
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
+        ],
+
+        'stdout' => [
+            'driver' => 'single',
+            'path' => 'php://stdout',  // Writing to stdout
+            'level' => env('LOG_LEVEL', 'debug'),
         ],
 
     ],

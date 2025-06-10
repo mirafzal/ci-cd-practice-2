@@ -28,6 +28,21 @@ services:
     depends_on:
       - db
 
+  worker:
+    image: registry.digitalocean.com/my-registry123/mylaravelapp:1.0.0
+    command: >
+      sh -c "php artisan migrate --force && php artisan optimize && php-fpm"
+    env_file:
+      - .env
+    volumes:
+      - laravel-public:/var/www/html/public:ro
+      - laravel-storage:/var/www/html/storage
+      - laravel-cache:/var/www/html/bootstrap/cache
+    networks:
+      - laravel
+    depends_on:
+      - db
+
   db:
     image: postgres:16
     environment:
