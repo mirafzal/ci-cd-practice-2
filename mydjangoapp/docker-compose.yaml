@@ -1,0 +1,58 @@
+version: '3.9'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: gunicorn mydjangoapp.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    environment:
+      DB_NAME: app_db
+      DB_USER: app_user
+      DB_PASSWORD: app_password
+      DB_HOST: db
+      DB_PORT: 5432
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/0
+    depends_on:
+      - db
+
+  celery:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: celery -A mydjangoapp worker --loglevel=info
+    volumes:
+      - .:/app
+    environment:
+      DB_NAME: app_db
+      DB_USER: app_user
+      DB_PASSWORD: app_password
+      DB_HOST: db
+      DB_PORT: 5432
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/0
+    depends_on:
+      - db
+      - redis
+
+  db:
+    image: postgres:15-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      POSTGRES_DB: app_db
+      POSTGRES_USER: app_user
+      POSTGRES_PASSWORD: app_password
+
+  redis:
+    image: redis:alpine        # Redis image
+    ports:
+      - "6379:6379"            # Expose Redis default port
+
+volumes:
+  postgres_data:
