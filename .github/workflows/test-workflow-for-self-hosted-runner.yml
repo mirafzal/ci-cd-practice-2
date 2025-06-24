@@ -1,0 +1,11 @@
+name: Test workflow
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test_job:
+    runs-on: [self-hosted, Linux, X64]
+
+    steps:
+      - run: echo 'hello world'
